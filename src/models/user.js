@@ -3,16 +3,16 @@ const mongoose = require('mongoose');
 const User = new mongoose.model('User', {
     username: {
         type: String,
-        require: true,
+        required: true,
         unique: true
     },
     password: {
         type: String,
-        require: true
+        required: true
     },
     email: {
         type: String,
-        require: true,
+        required: true,
         unique: true
     },
     avater: String,
