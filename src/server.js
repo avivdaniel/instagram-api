@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const routes = require('./config/routes');
 const cookieParser = require('cookie-parser')
 const app = express();
+const config = require('./config/env/index');
 const port = 4000;
 
 app.use(cors({
@@ -16,6 +17,7 @@ app.use(cors({
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use(express.static('public'));
 app.use(routes);
 
 connect();
@@ -25,7 +27,7 @@ function listen() {
 }
 
 function connect() {
-    mongoose.connect('mongodb://localhost:27017/instagram', {
+    mongoose.connect(config.dbUrl, {
         useNewUrlParser: true,
         useUnifiedTopology: true
     });
