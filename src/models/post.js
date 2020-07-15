@@ -3,7 +3,7 @@ const { ObjectId } = mongoose.Types;
 
 const Post = new mongoose.model('Post', {
     userId: {
-        type: String,
+        type: ObjectId,
         required: true,
     },
     title: String,

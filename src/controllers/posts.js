@@ -1,20 +1,14 @@
 const Post = require('../models/post');
 class Posts {
-    async getAllPosts(req, res) {
-        try {
-            const posts = await Post.find();
-            res.json(posts);
-        } catch (err) {
-            res.status(500).json(err);
-        }
-    }
+
 
     async create(req, res) {
         const post = new Post({
             userId: req.user._id,
             image: req.file.filename,
-            title: req.body.title
+            description: req.body.description
         });
+
         try {
             const createdPost = await post.save();
             res.status(201).json(createdPost);
@@ -23,7 +17,17 @@ class Posts {
         }
     }
 
-    async addLike(req, res) {
+    async getAll(req, res) {
+        try {
+            const posts = await Post.find()
+                .sort({ createdAt: req.query.sort });
+            res.json(posts);
+        } catch (err) {
+            res.sendStatus(400);
+        }
+    }
+
+    async like(req, res) {
         try {
             const post = await Post.findOneAndUpdate({
                 _id: req.params.id
@@ -32,12 +36,12 @@ class Posts {
                     likes: req.user._id
                 }
             }, {
-                new: true, //set the new option to true to return the document after update was applied.
+                new: true
             });
+            res.json(post);
         } catch (err) {
             res.status(500).json(err);
         }
-
     }
 
     async unlike(req, res) {
@@ -46,20 +50,21 @@ class Posts {
             return;
         }
         try {
-            const post = await Post.findOneAndDelete({
+            const post = await Post.findOneAndUpdate({
                 _id: req.params.id
             }, {
                 $pull: { //The $pull operator removes from an existing array all instances of a value or values that match a specified condition.
                     likes: req.user._id
                 }
             }, {
-                new: true,
+                new: true //set the new option to true to return the document after update was applied.
             });
+            res.json(post);
         } catch (err) {
             res.status(500).json(err);
         }
-
     }
+
 
 }
 

@@ -7,6 +7,7 @@ async function auth(req, res, next) {
         res.sendStatus(403);
         return;
     }
+
     const user = await User.findById(userId);
     if (!user) {
         res.sendStatus(403);
@@ -16,4 +17,5 @@ async function auth(req, res, next) {
     req.user = user;
     next();
 }
+
 module.exports = auth;

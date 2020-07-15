@@ -1,6 +1,9 @@
 const md5 = require('md5');
+const mongoose = require('mongoose');
+const { ObjectId } = mongoose.Types;
 const User = require('../models/user');
 const config = require('../config/env/index');
+const Post = require('../models/post');
 const ERR_DUPLICATE_VALUE = 11000;
 const DURATION_60D = 60 * 60 * 24 * 60 * 1000;
 
@@ -10,6 +13,18 @@ class Users {
         User.find()
             .then(users => res.json(users))
             .catch(err => res.status(500).json(err));
+    }
+
+    async getPosts(req, res) {
+        try {
+            const posts = await Post.find({
+                userId: ObjectId(req.params.id)
+            })
+                .sort({ createdAt: req.query.sort || 1 });
+            res.json(posts);
+        } catch (err) {
+            res.sendStatus(400);
+        }
     }
 
     async create(req, res) {
