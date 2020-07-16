@@ -2,9 +2,10 @@ const mongoose = require('mongoose');
 const { ObjectId } = mongoose.Types;
 
 const Post = new mongoose.model('Post', {
-    userId: {
+    user: {
         type: ObjectId,
         required: true,
+        ref: 'User'
     },
     title: String,
     image: {

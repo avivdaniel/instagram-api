@@ -9,17 +9,26 @@ const DURATION_60D = 60 * 60 * 24 * 60 * 1000;
 
 class Users {
 
-    getAll(req, res) {
-        User.find()
-            .then(users => res.json(users))
-            .catch(err => res.status(500).json(err));
+    async getAll(req, res) {
+        const regex = new RegExp(req.query.username || '', 'i')
+        try {
+            const users = await User.find({
+                username: regex
+            })
+                .select(['username', 'avatar', 'bio'])
+                .limit(10);
+            res.json(users);
+        } catch (err) {
+            res.status(500).json(err)
+        }
     }
 
     async getPosts(req, res) {
         try {
             const posts = await Post.find({
-                userId: ObjectId(req.params.id)
+                user: ObjectId(req.params.id)
             })
+                .populate('user', ['_id', 'avatar', 'username'])
                 .sort({ createdAt: req.query.sort || 1 });
             res.json(posts);
         } catch (err) {

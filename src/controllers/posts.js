@@ -3,25 +3,37 @@ class Posts {
 
 
     async create(req, res) {
-        const post = new Post({
-            userId: req.user._id,
-            image: req.file.filename,
-            description: req.body.description
-        });
+        console.log(req.body)
+        // var imageBuffer = req.file.buffer;
+        // var imageBuffer = req.file;
 
-        try {
-            const createdPost = await post.save();
-            res.status(201).json(createdPost);
-        } catch (err) {
-            res.status(400).json(err);
-        }
+        // var imageName = 'public/posts/map.png';
+        // console.log(imageBuffer);
+
+        res.send('hey')
+        // fs.createWriteStream(imageName).write(imageBuffer);
+
+        // const post = new Post({
+        //     user: req.user._id,
+        //     image: req.file.filename,
+        //     description: req.body.description
+        // });
+
+
+        // try {
+        //     const createdPost = await post.save();
+        //     res.status(201).json(createdPost);
+        // } catch (err) {
+        //     res.status(400).json(err);
+        // }
     }
 
     async getAll(req, res) {
         try {
             const posts = await Post.find()
+                .populate('user', ['_id', 'avatar', 'username'])
                 .sort({ createdAt: req.query.sort });
-            res.json(posts);
+                res.json(posts);
         } catch (err) {
             res.sendStatus(400);
         }
