@@ -3,10 +3,6 @@ var fs = require('fs');
 class Posts {
 
     async create(req, res) {
-        /*
-            You can use "jpg" extension hardcoded in the output file.
-            Don't worry, it will work even if the user will upload a PNG file.
-        */
         const makeImageName = () => {
             return Math.random().toString(36).substr(2, 9) + '.jpg';
         }
@@ -20,20 +16,10 @@ class Posts {
         });
 
 
-
-
-        // let imageName = 'public/posts/test.jpg';
-        // let image = req.body.image; // base64 string that you get from the frontend
-        // const base64Data = image.replace(/^data:image\/png;base64,/, '');
-        // // Convert base64 to binary and save it as a file using `fs`
-        // require('fs').writeFile(imageName, base64Data, 'base64', function (err) {
-        //     console.log(err); // Must handle errors
-        // });
-
         const post = new Post({
             user: req.user._id,
             image: imageName,
-            description: req.body.description
+            title: req.body.title
         });
 
 
@@ -54,6 +40,19 @@ class Posts {
             res.json(posts);
         } catch (err) {
             res.sendStatus(400);
+        }
+    }
+
+    async getPostById(req, res) {
+        try {
+            const post = await Post.findById(req.params.id)
+                .populate('user', ['avatar', 'username'])
+            if (!post) {
+                res.sendStatus(404);
+            }
+            res.json(post);
+        } catch (err) {
+            res.sendStatus(500);
         }
     }
 

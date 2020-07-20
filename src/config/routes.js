@@ -27,11 +27,13 @@ routes.put('/users', users.create);
 routes.post('/users/login', users.login);
 routes.get('/users/me', auth, users.me);
 routes.get('/users/check', users.check);
+routes.get('/users/:id', auth, users.getUserById);
 routes.get('/users/:id/posts', auth, users.getPosts);
 
 //posts
 routes.get('/posts', auth, posts.getAll);
 routes.put('/posts', auth, upload.array(), posts.create);
+routes.get('/posts/:id', posts.getPostById);
 routes.post('/posts/:id/likes', auth, posts.like);
 routes.delete('/posts/:id/likes/:userId', auth, posts.unlike);
 

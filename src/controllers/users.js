@@ -23,6 +23,20 @@ class Users {
         }
     }
 
+    async getUserById(req, res) {
+        try {
+            const user = await User.findById(req.params.id)
+                .select(['_id', 'username', 'bio', 'avatar', 'createdAt']);
+            if (!user) {
+                res.sendStatus(400);
+                return;
+            }
+            res.json(user);
+        } catch (err) {
+            res.status(500).json(err)
+        }
+    }
+
     async getPosts(req, res) {
         try {
             const posts = await Post.find({
