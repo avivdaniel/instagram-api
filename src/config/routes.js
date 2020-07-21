@@ -32,7 +32,7 @@ routes.get('/users/:id/posts', auth, users.getPosts);
 
 //posts
 routes.get('/posts', auth, posts.getAll);
-routes.put('/posts', auth, upload.array(), posts.create);
+routes.put('/posts', auth, upload.single('image'), posts.create);
 routes.get('/posts/:id', posts.getPostById);
 routes.post('/posts/:id/likes', auth, posts.like);
 routes.delete('/posts/:id/likes/:userId', auth, posts.unlike);
