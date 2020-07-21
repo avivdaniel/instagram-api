@@ -86,7 +86,6 @@ class Users {
 
     async check(req, res) {
         const { username, email } = req.query;
-        console.log(req.query)
         if (!username && !email) {
             res.sendStatus(400);
             return;
@@ -105,7 +104,43 @@ class Users {
     }
 
     async editUser(req, res) {
-        res.send('OK!')
+        const id = { _id: req.params.id };
+        const updateValues = req.body;
+        const queryOptions = {
+            upsert: true,
+            // setDefaultsOnInsert: true,
+            new: true
+        };
+
+        if (req.user._id !== id) {
+            res.sendStatus(303);
+            return;
+        }
+        if (!id && !updateValues) {
+            res.sendStatus(400);
+            return;
+        }
+        try {
+            let updatedUser = await User.findOneAndUpdate(id,
+                {
+                    $set:
+                    {
+                        username: req.body.username,
+                        avatar: req.body.avatar,
+                        bio: req.body.bio
+                    }
+                }
+                , queryOptions);
+            if (!updatedUser) {
+                res.sendStatus(401);
+                return;
+            }
+            res.json(updatedUser);
+        } catch (err) {
+            console.log(err)
+            res.status(400).json(err);
+        }
+
     }
 
     me(req, res) {

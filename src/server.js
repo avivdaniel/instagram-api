@@ -29,7 +29,8 @@ function listen() {
 function connect() {
     mongoose.connect(config.dbUrl, {
         useNewUrlParser: true,
-        useUnifiedTopology: true
+        useUnifiedTopology: true,
+        useFindAndModify: false
     });
     const db = mongoose.connection;
     db.on('error', err => console.log(err));

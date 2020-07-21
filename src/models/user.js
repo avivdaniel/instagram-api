@@ -8,15 +8,18 @@ const User = new mongoose.model('User', {
     },
     password: {
         type: String,
-        required: true
+        required: true,
+        immutable: true
     },
     email: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        immutable: true
     },
-    avater: String,
+    avatar: String,
     createdAt: {
+        immutable: true,
         type: Date,
         default: () => new Date()
     },
