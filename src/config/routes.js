@@ -28,7 +28,8 @@ routes.post('/users/login', users.login);
 routes.get('/users/me', auth, users.me);
 routes.get('/users/check', users.check);
 routes.get('/users/:id', auth, users.getUserById);
-routes.get('/users/:id/posts', auth, users.getPosts);
+routes.post('/users/:id', upload.single('avatar'), users.editUser),
+    routes.get('/users/:id/posts', auth, users.getPosts);
 
 //posts
 routes.get('/posts', auth, posts.getAll);

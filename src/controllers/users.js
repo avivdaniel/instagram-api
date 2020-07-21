@@ -104,6 +104,10 @@ class Users {
 
     }
 
+    async editUser(req, res) {
+        res.send('OK!')
+    }
+
     me(req, res) {
         res.json(req.user);
     }
