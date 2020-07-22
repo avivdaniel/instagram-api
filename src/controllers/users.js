@@ -105,9 +105,14 @@ class Users {
     }
 
     async editUser(req, res) {
-        const id = { _id: req.params.id };
+        const id = req.params.id;
+        console.log(id);
+        console.log('////');
+        console.log(req.user);
+
         const queryOptions = {
             upsert: true,
+            omitUndefined: true,
             // setDefaultsOnInsert: true,
             new: true
         };
@@ -120,30 +125,26 @@ class Users {
         const base64Image = base64Data.split(';base64,').pop();
         const avatarName = makeAvatarName();
         console.log(avatarName);
-        fs.writeFile("public/avatars/" + avatarName, base64Image, 'base64', err => {
-            if (err) console.log(err);
-        });
 
 
-        // if (req.user._id !== id) {
-        //     res.sendStatus(303);
-        //     return;
-        // }
-        if (!id && !updateValues) {
+        const updatedValues = {
+            username: req.body.username,
+            avatar: avatarName,
+            bio: req.body.bio
+        }
+        if (!id || !updatedValues) {
             res.sendStatus(400);
             return;
         }
+        if (req.user._id !== id) {
+            res.sendStatus(303);
+            return;
+        }
         try {
-            let updatedUser = await User.findOneAndUpdate(id,
-                {
-                    $set:
-                    {
-                        username: req.body.username,
-                        avatar: req.avatarName,
-                        bio: req.body.bio
-                    }
-                }
-                , queryOptions);
+            let updatedUser = await User.findByIdAndUpdate(id, updatedValues, queryOptions);
+            fs.writeFile("public/avatars/" + avatarName, base64Image, 'base64', err => {
+                if (err) console.log(err);
+            });
             if (!updatedUser) {
                 res.sendStatus(401);
                 return;
