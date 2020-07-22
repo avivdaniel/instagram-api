@@ -8,6 +8,7 @@ const auth = require('../middlewares/auth');
 const multer = require('multer');
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
+        console.log(file);
         cb(null, 'public/posts')
     },
     filename: function (req, file, cb) {
@@ -18,7 +19,10 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({
+    storage: storage,
+    limits: { fieldSize: 25 * 1024 * 1024 }
+});
 const routes = express.Router();
 
 //users
@@ -28,7 +32,7 @@ routes.post('/users/login', users.login);
 routes.get('/users/me', auth, users.me);
 routes.get('/users/check', users.check);
 routes.get('/users/:id', auth, users.getUserById);
-routes.post('/users/:id', upload.single('avatar'), users.editUser),
+routes.post('/users/:id', auth, upload.single('avatar'), users.editUser),
     routes.get('/users/:id/posts', auth, users.getPosts);
 
 //posts

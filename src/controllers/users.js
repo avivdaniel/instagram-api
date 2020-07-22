@@ -4,6 +4,7 @@ const { ObjectId } = mongoose.Types;
 const User = require('../models/user');
 const config = require('../config/env/index');
 const Post = require('../models/post');
+const fs = require('fs');
 const ERR_DUPLICATE_VALUE = 11000;
 const DURATION_60D = 60 * 60 * 24 * 60 * 1000;
 
@@ -105,17 +106,29 @@ class Users {
 
     async editUser(req, res) {
         const id = { _id: req.params.id };
-        const updateValues = req.body;
         const queryOptions = {
             upsert: true,
             // setDefaultsOnInsert: true,
             new: true
         };
 
-        if (req.user._id !== id) {
-            res.sendStatus(303);
-            return;
+        const makeAvatarName = () => {
+            return Math.random().toString(36).substr(2, 9) + '.jpg';
         }
+
+        const base64Data = req.body.avatar;
+        const base64Image = base64Data.split(';base64,').pop();
+        const avatarName = makeAvatarName();
+        console.log(avatarName);
+        fs.writeFile("public/avatars/" + avatarName, base64Image, 'base64', err => {
+            if (err) console.log(err);
+        });
+
+
+        // if (req.user._id !== id) {
+        //     res.sendStatus(303);
+        //     return;
+        // }
         if (!id && !updateValues) {
             res.sendStatus(400);
             return;
@@ -126,7 +139,7 @@ class Users {
                     $set:
                     {
                         username: req.body.username,
-                        avatar: req.body.avatar,
+                        avatar: req.avatarName,
                         bio: req.body.bio
                     }
                 }

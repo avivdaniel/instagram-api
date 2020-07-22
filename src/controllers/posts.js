@@ -1,5 +1,5 @@
 const Post = require('../models/post');
-var fs = require('fs');
+const fs = require('fs');
 class Posts {
 
     async create(req, res) {
