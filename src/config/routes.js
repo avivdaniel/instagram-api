@@ -1,6 +1,7 @@
 const express = require('express');
 const users = require('../controllers/users');
 const posts = require('../controllers/posts');
+const comments = require('../controllers/comments');
 const auth = require('../middlewares/auth');
 // const fs = require('fs');
 
@@ -38,8 +39,10 @@ routes.post('/users/:id', auth, upload.single('avatar'), users.editUser),
 //posts
 routes.get('/posts', auth, posts.getAll);
 routes.put('/posts', auth, upload.single('image'), posts.create);
-routes.get('/posts/:id', posts.getPostById);
+routes.get('/posts/:id', auth, posts.getPostById);
 routes.post('/posts/:id/likes', auth, posts.like);
+routes.put('/posts/:id/comment', auth, comments.create);
+routes.get('/posts/:id/comment', auth, comments.getAll);
 routes.delete('/posts/:id/likes/:userId', auth, posts.unlike);
 
 

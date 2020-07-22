@@ -15,7 +15,6 @@ class Posts {
             if (err) console.log(err);
         });
 
-
         const post = new Post({
             user: req.user._id,
             image: imageName,
@@ -25,7 +24,6 @@ class Posts {
 
         try {
             const createdPost = await post.save();
-            console.log(createdPost);
             res.status(201).json(createdPost);
         } catch (err) {
             res.status(400).json(err);
@@ -46,7 +44,7 @@ class Posts {
     async getPostById(req, res) {
         try {
             const post = await Post.findById(req.params.id)
-                .populate('user', ['avatar', 'username'])
+                .populate('user', ['avatar', 'username']);
             if (!post) {
                 res.sendStatus(404);
             }

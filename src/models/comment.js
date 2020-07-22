@@ -1,18 +1,20 @@
 const mongoose = require('mongoose');
 const { ObjectId } = mongoose.Types;
 
-const Post = new mongoose.model('Post', {
+const Comment = new mongoose.model('Comment', {
     user: {
         type: ObjectId,
         required: true,
         ref: 'User'
     },
-    title: String,
-    image: {
-        type: String,
-        required: true,
+    postId: {
+        type: ObjectId,
+        required: true
     },
-    likes: [ObjectId],
+    content: {
+        type: String,
+        required: true
+    },
     createdAt: {
         type: Date,
         default: () => new Date()
@@ -20,4 +22,4 @@ const Post = new mongoose.model('Post', {
 });
 
 
-module.exports = Post;
+module.exports = Comment;

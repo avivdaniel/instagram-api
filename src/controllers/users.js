@@ -47,6 +47,7 @@ class Users {
                 .sort({ createdAt: req.query.sort || 1 });
             res.json(posts);
         } catch (err) {
+            console.log(err);
             res.sendStatus(400);
         }
     }
@@ -106,9 +107,9 @@ class Users {
 
     async editUser(req, res) {
         const id = req.params.id;
-        console.log(id);
-        console.log('////');
-        console.log(req.user);
+        // console.log(id);
+        // console.log('////');
+        // console.log(req.user);
 
         const queryOptions = {
             upsert: true,
@@ -126,25 +127,26 @@ class Users {
         const avatarName = makeAvatarName();
         console.log(avatarName);
 
+        fs.writeFile("public/avatars/" + avatarName, base64Image, 'base64', err => {
+            if (err) console.log(err);
+        });
 
         const updatedValues = {
             username: req.body.username,
             avatar: avatarName,
             bio: req.body.bio
         }
-        if (!id || !updatedValues) {
-            res.sendStatus(400);
-            return;
-        }
-        if (req.user._id !== id) {
-            res.sendStatus(303);
-            return;
-        }
+
+        // if (!id && !updatedValues) {
+        //     res.sendStatus(400);
+        //     return;
+        // }
+        // if (req.user._id !== id) {
+        //     res.sendStatus(303);
+        //     return;
+        // }
         try {
             let updatedUser = await User.findByIdAndUpdate(id, updatedValues, queryOptions);
-            fs.writeFile("public/avatars/" + avatarName, base64Image, 'base64', err => {
-                if (err) console.log(err);
-            });
             if (!updatedUser) {
                 res.sendStatus(401);
                 return;
