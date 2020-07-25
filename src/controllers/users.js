@@ -106,45 +106,37 @@ class Users {
     }
 
     async editUser(req, res) {
-        const id = req.params.id;
-        // console.log(id);
-        // console.log('////');
-        // console.log(req.user);
-
-        const queryOptions = {
-            upsert: true,
-            omitUndefined: true,
-            // setDefaultsOnInsert: true,
-            new: true
-        };
-
         const makeAvatarName = () => {
             return Math.random().toString(36).substr(2, 9) + '.jpg';
         }
-
-        const base64Data = req.body.avatar;
-        const base64Image = base64Data.split(';base64,').pop();
-        const avatarName = makeAvatarName();
-        console.log(avatarName);
-
-        fs.writeFile("public/avatars/" + avatarName, base64Image, 'base64', err => {
-            if (err) console.log(err);
-        });
-
-        const updatedValues = {
+        const id = req.params.id;
+        const queryOptions = {
+            upsert: true,
+            omitUndefined: true,
+            new: true
+        };
+        let updatedValues = {
             username: req.body.username,
-            avatar: avatarName,
             bio: req.body.bio
         }
 
-        // if (!id && !updatedValues) {
-        //     res.sendStatus(400);
-        //     return;
-        // }
-        // if (req.user._id !== id) {
-        //     res.sendStatus(303);
-        //     return;
-        // }
+        if (!id && !updatedValues) {
+            console.log('no values')
+            res.sendStatus(400);
+            return;
+        }
+        if (req.user._id != id) {
+            res.sendStatus(303);
+            return;
+        }
+        if (req.body.avatar) {
+            const base64Data = req.body.avatar.split(';base64,').pop();
+            const avatarName = makeAvatarName();
+            updatedValues.avatar = avatarName;
+            fs.writeFile("public/avatars/" + avatarName, base64Data, 'base64', err => {
+                if (err) console.log(err);
+            });
+        }
         try {
             let updatedUser = await User.findByIdAndUpdate(id, updatedValues, queryOptions);
             if (!updatedUser) {

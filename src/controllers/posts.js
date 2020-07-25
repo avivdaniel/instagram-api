@@ -10,7 +10,6 @@ class Posts {
         const base64Data = req.body.image;
         const base64Image = base64Data.split(';base64,').pop();
         const imageName = makeImageName();
-        console.log(imageName);
         fs.writeFile("public/posts/" + imageName, base64Image, 'base64', err => {
             if (err) console.log(err);
         });
