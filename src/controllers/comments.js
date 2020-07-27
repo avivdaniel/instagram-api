@@ -14,6 +14,7 @@ class Comments {
 
         try {
             const newComment = await comment.save();
+            await newComment.populate('user', ['avatar', 'username']).execPopulate();
             res.status(201).json(newComment);
         } catch (err) {
             console.log(err);

@@ -4,6 +4,8 @@ const { ObjectId } = mongoose.Types;
 const User = require('../models/user');
 const config = require('../config/env/index');
 const Post = require('../models/post');
+const jwt = require('jsonwebtoken');
+
 const fs = require('fs');
 const ERR_DUPLICATE_VALUE = 11000;
 const DURATION_60D = 60 * 60 * 24 * 60 * 1000;
@@ -79,7 +81,8 @@ class Users {
                 res.sendStatus(401);
                 return;
             }
-            res.cookie(config.cookieName, user._id, { maxAge: DURATION_60D });
+            const token = jwt.sign({ id: user._id }, config.secret)
+            res.cookie(config.cookieName, token, { maxAge: DURATION_60D });
             res.json(user).send();
         } catch (error) {
             res.sendStatus(500);
