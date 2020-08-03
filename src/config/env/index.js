@@ -1,3 +1,9 @@
-const development = require('./development')
+const development = require('./development');
+const production = require('./production');
 
-module.exports = development;
+let env = development;
+if (process.env.NODE_ENV === 'production') {
+    env = production;
+}
+
+module.exports = env;
