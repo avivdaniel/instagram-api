@@ -119,7 +119,7 @@ class Users {
             new: true
         };
         let updatedValues = {
-            username: req.body.username,
+            fullName: req.body.fullName,
             bio: req.body.bio
         }
 
