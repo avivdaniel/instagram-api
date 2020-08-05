@@ -29,7 +29,7 @@ class Users {
     async getUserById(req, res) {
         try {
             const user = await User.findById(req.params.id)
-                .select(['_id', 'username', 'bio', 'avatar', 'createdAt']);
+                .select(['_id', 'fullName', 'username', 'bio', 'avatar', 'createdAt']);
             if (!user) {
                 res.sendStatus(400);
                 return;
