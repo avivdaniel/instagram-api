@@ -146,7 +146,8 @@ class Users {
             });
         }
         try {
-            let updatedUser = await User.findByIdAndUpdate(id, updatedValues, queryOptions);
+            let updatedUser = await User.findByIdAndUpdate(id, updatedValues, queryOptions)
+                .select(['_id', 'fullName', 'username', 'bio', 'avatar', 'createdAt']);
             if (!updatedUser) {
                 res.sendStatus(401);
                 return;
