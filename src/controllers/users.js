@@ -82,6 +82,11 @@ class Users {
                 return;
             }
             const token = jwt.sign({ id: user._id }, config.secret)
+            if (config.dev) {
+                res.cookie(config.cookieName, token, { maxAge: DURATION_60D });
+                res.json(user).send();
+                return;
+            }
             res.cookie(config.cookieName, token, { maxAge: DURATION_60D, sameSite: 'None', secure: true });
             res.json(user).send();
         } catch (error) {

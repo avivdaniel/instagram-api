@@ -5,6 +5,7 @@ const { cookieName, secret } = require('../config/env/index');
 async function auth(req, res, next) {
     const token = req.cookies[cookieName];
     if (!token) {
+        console.log('no token');
         res.sendStatus(403);
         return;
     }
@@ -13,6 +14,7 @@ async function auth(req, res, next) {
         const payload = jwt.verify(token, secret);
         const user = await User.findById(payload.id);
         if (!user) {
+            console.log('no user');
             res.sendStatus(403);
             return;
         }
@@ -20,6 +22,7 @@ async function auth(req, res, next) {
         next();
 
     } catch (err) {
+        console.log(err);
         res.sendStatus(403);
     }
 
