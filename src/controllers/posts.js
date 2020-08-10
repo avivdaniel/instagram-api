@@ -24,6 +24,7 @@ class Posts {
         try {
             const createdPost = await post.save();
             res.status(201).json(createdPost);
+            console.log(post)
         } catch (err) {
             res.status(400).json(err);
         }
@@ -33,6 +34,7 @@ class Posts {
         try {
             const posts = await Post.find()
                 .populate('user', ['_id', 'avatar', 'username'])
+                .populate('comments', ['_id'])
                 .sort({ createdAt: req.query.sort });
             res.json(posts);
         } catch (err) {
@@ -79,11 +81,11 @@ class Posts {
             const post = await Post.findOneAndUpdate({
                 _id: req.params.id
             }, {
-                $pull: { //The $pull operator removes from an existing array all instances of a value or values that match a specified condition.
+                $pull: {
                     likes: req.user._id
                 }
             }, {
-                new: true //set the new option to true to return the document after update was applied.
+                new: true
             });
             res.json(post);
         } catch (err) {

@@ -1,5 +1,5 @@
 const Comment = require('../models/comment');
-const User = require('../models/user');
+const Post = require('../models/post');
 const config = require('../config/env/index');
 
 class Comments {
@@ -15,6 +15,9 @@ class Comments {
         try {
             const newComment = await comment.save();
             await newComment.populate('user', ['avatar', 'username']).execPopulate();
+            const refPost = await Post.findById(newComment.postId)
+            await refPost.comments.push(newComment._id)
+            await refPost.save();
             res.status(201).json(newComment);
         } catch (err) {
             console.log(err);

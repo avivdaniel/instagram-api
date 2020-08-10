@@ -13,6 +13,10 @@ const Post = new mongoose.model('Post', {
         required: true,
     },
     likes: [ObjectId],
+    comments: {
+        type: [ObjectId],
+        ref: 'Comment'
+    },
     createdAt: {
         type: Date,
         default: () => new Date()
