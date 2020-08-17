@@ -5,7 +5,7 @@ const User = require('../models/user');
 const config = require('../config/env/index');
 const Post = require('../models/post');
 const jwt = require('jsonwebtoken');
-
+const makeUniqueImageName = require('../utils/unique')
 const fs = require('fs');
 const ERR_DUPLICATE_VALUE = 11000;
 const DURATION_60D = 60 * 60 * 24 * 60 * 1000;
@@ -114,9 +114,6 @@ class Users {
     }
 
     async editUser(req, res) {
-        const makeAvatarName = () => {
-            return Math.random().toString(36).substr(2, 9) + '.jpg';
-        }
         const id = req.params.id;
         const queryOptions = {
             upsert: true,
@@ -129,17 +126,16 @@ class Users {
         }
 
         if (!id && !updatedValues) {
-            console.log('no values')
             res.sendStatus(400);
             return;
         }
         if (req.user._id != id) {
-            res.sendStatus(303);
+            res.sendStatus(403);
             return;
         }
         if (req.body.avatar) {
             const base64Data = req.body.avatar.split(';base64,').pop();
-            const avatarName = makeAvatarName();
+            const avatarName = makeUniqueImageName();
             updatedValues.avatar = avatarName;
             fs.writeFile("public/avatars/" + avatarName, base64Data, 'base64', err => {
                 if (err) console.log(err);
@@ -158,6 +154,10 @@ class Users {
             res.status(400).json(err);
         }
 
+    }
+
+    logout(req, res) {
+        res.clearCookie(config.cookieName).sendStatus(200);
     }
 
     me(req, res) {

@@ -1,15 +1,12 @@
 const Post = require('../models/post');
 const fs = require('fs');
+const makeUniqueImageName = require('../utils/unique');
 class Posts {
 
     async create(req, res) {
-        const makeImageName = () => {
-            return Math.random().toString(36).substr(2, 9) + '.jpg';
-        }
-
         const base64Data = req.body.image;
         const base64Image = base64Data.split(';base64,').pop();
-        const imageName = makeImageName();
+        const imageName = makeUniqueImageName();
         fs.writeFile("public/posts/" + imageName, base64Image, 'base64', err => {
             if (err) console.log(err);
         });

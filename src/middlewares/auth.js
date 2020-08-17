@@ -5,7 +5,6 @@ const { cookieName, secret } = require('../config/env/index');
 async function auth(req, res, next) {
     const token = req.cookies[cookieName];
     if (!token) {
-        console.log('no token');
         res.sendStatus(403);
         return;
     }
